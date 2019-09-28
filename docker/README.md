@@ -1,3 +1,16 @@
+#### Table of Contents
+- [Using the images](#using-the-images)
+  - [MariaDB container](#mariadb-container)
+  - [DOMserver container](#domserver-container)
+    - [Environment variables](#environment-variables)
+    - [Passwords through files](#passwords-through-files)
+    - [Commands](#commands)
+  - [Judgehost container](#judgehost-container)
+    - [Environment variables](#environment-variables)
+    - [Example AWS Setup](#example-aws-setup)
+- [Building the images](#building-the-images)
+    
+
 # DOMjudge Docker containers
 
 This directory contains the necessary files to create Docker images which can be used to run DOMjudge
@@ -130,6 +143,19 @@ The following environment variables are supported by the `judgehost` container:
 * `DAEMON_ID` (defaults to `0`): ID of the daemon to use for this judgedaemon. If you start multiple judgehosts on one (physical) machine, make sure each one has a different `DAEMON_ID`.
 * `DOMJUDGE_CREATE_WRITABLE_TEMP_DIR` (defaults top `0`): if set to 1, a writable temporary directory will be created for submissions. This only works for DOMjudge versions >= 6.1.
 * `RUN_USER_UID_GID` (defaults to `62860`): UID/GID of the user that will submissions. Make sure this UID/GID is **not** used on your host OS.
+
+#### Example AWS Setup
+
+The [BAPC 2019 contest](https://2019.bapc.eu) used AWS EC2 to create judgehost workers. Thanks to Guillaume Derval -- who also used AWS for the 2018 contest -- we were able to create new judgehost instances with just one command.
+
+The command is as follows, it uses the [AWS cli tool](https://github.com/aws/aws-cli):
+```bash
+aws ec2 run-instances --launch-template LaunchTemplateId=lt-0cd6534b9b97a9948,Version=2 --count 1 --cpu-options CoreCount=1,ThreadsPerCore=1 --user-data file://bapc-template.sh
+```
+
+This makes use of a launch template, which contains all of the instance settings that we used -- except for the cpu-options, which a template cannot store. It is recommended to create the template by setting up a judgehost manually yourself, with the instance settings that you want to use. This way you can setup the network and actually test it before templating it. For reference, BAPC 2019 used the following template:
+
+
 
 ## Building the images
 
