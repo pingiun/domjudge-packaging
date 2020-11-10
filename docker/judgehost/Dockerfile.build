@@ -32,4 +32,5 @@ RUN /domjudge-src/build.sh
 
 # We need to mount proc, which is not possible in "docker build". Thus we need to run this when starting the container
 COPY ["judgehost/chroot-and-tar.sh", "/scripts/"]
+COPY ["judgehost/dj_make_chroot", "/opt/domjudge/judgehost/bin/dj_make_chroot"]
 CMD ["/scripts/chroot-and-tar.sh"]
